@@ -89,7 +89,19 @@ camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(
       });
       const data=await response.json();
       console.log('AI bottle result:',data);
-      alert(data.error ? 'Scanner error: '+data.error : JSON.stringify(data, null, 2));
+      if(data.error){
+  alert('Scanner error: '+data.error);
+}else if(data.bottles && data.bottles.length){
+  const b=data.bottles[0];
+  brand.value=[b.brand,b.expression].filter(Boolean).join(' — ');
+  type.value=b.spiritType||'';
+  proof.value=b.proof||'';
+  size.value=b.bottleSizeML||750;
+  remaining.value=b.remainingPercent??100;
+  alert('Bottle identified! Review the information below, then tap Add to My Den.');
+}else{
+  alert('No bottle could be identified.');
+}
     }catch(err){
       console.error(err);
       alert('Could not connect to the bottle scanner.');
