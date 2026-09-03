@@ -76,6 +76,26 @@ function render(){
  list.innerHTML=x.length?x.map(b=>`<div class="bottle"><strong>${b.brand}</strong><div class="muted">${b.type||'Spirit'} • ${b.proof?b.proof+' proof • ':''}${b.size||''} • ${b.remaining||'?'}% remaining • ${b.location||locations[0]}</div></div>`).join(''):'<p class="muted">No bottles found.</p>';
  locationList.innerHTML=locations.map(l=>`<div class="locationRow"><div><strong>${l}</strong><div class="muted">${bottles.filter(b=>(b.location||locations[0])===l).length} bottle(s)</div></div><div class="actions"><button class="secondary" onclick="renameLocation('${l.replaceAll("'","\\'")}')">Rename</button><button class="danger" onclick="deleteLocation('${l.replaceAll("'","\\'")}')">Delete</button></div></div>`).join('');
 }
-camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(f);photo.style.display='block'}}
+camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(f)analyzeBottlePhoto(f);;photo.style.display='block'}}
+ const AI_WORKER='https://rjs-whiskey-den-ai.deserttrash2000.workers.dev/';
+ async function analyzeBottlePhoto(file){
+  const reader=new FileReader();
+  reader.onload=async()=>{
+    try{
+      const response=await fetch(AI_WORKER,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({image:reader.result})
+      });
+      const data=await response.json();
+      console.log('AI bottle result:',data);
+      alert(data.error ? 'Scanner error: '+data.error : 'Bottle photo analyzed successfully!');
+    }catch(err){
+      console.error(err);
+      alert('Could not connect to the bottle scanner.');
+    }
+  };
+  reader.readAsDataURL(file);
+}
 render();if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
 </script></body></html>
