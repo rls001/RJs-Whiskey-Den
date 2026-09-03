@@ -1,13 +1,17 @@
-# RJ’s Whiskey Den
+# RJ’s Whiskey Den — V3
 
-Version 1 progressive web app.
-
-Current features:
-- iPhone-friendly home screen
-- Take or choose a bottle photo
-- Manually add bottle name, type, proof, size and remaining percentage
+Features:
+- Combined inventory across all storage locations
+- Starting locations: Home, Jacksons, Refuge
+- Add unlimited new locations
+- Rename locations
+- Delete locations safely; bottles must be moved first
+- Location filter for inventory
+- Location counts on dashboard
+- Scan session remembers the last-used location
+- Photo capture/import
+- Manual bottle entry
 - Searchable inventory
-- Local storage on the device
-- Installable as a web app
+- Local on-device storage
 
 Next stage: AI multi-bottle identification and automatic metadata enrichment.
