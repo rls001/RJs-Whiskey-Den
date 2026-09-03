@@ -15,3 +15,5 @@ Features:
 - Local on-device storage
 
 Next stage: AI multi-bottle identification and automatic metadata enrichment.
+
+AI scanner backend setup
