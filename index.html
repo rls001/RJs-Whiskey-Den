@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17120d">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>RJ’s Whiskey Den</title>
+<style>
+:root{--bg:#17120d;--card:#261c14;--gold:#d3a44d;--text:#f7f0e4;--muted:#cbbda9}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px 18px 12px;border-bottom:1px solid #493723;position:sticky;top:0;background:#17120df2;backdrop-filter:blur(10px)}
+h1{margin:0;color:var(--gold);font-family:Georgia,serif;font-size:28px}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+main{padding:16px 16px 90px;max-width:700px;margin:auto}.card{background:var(--card);border:1px solid #493723;border-radius:18px;padding:16px;margin-bottom:14px}
+button,.btn{background:var(--gold);color:#17120d;border:0;border-radius:12px;padding:13px 15px;font-weight:700;font-size:16px}
+.secondary{background:#39291c;color:var(--text);border:1px solid #60482f}
+.row{display:flex;gap:10px;flex-wrap:wrap}.stat{flex:1;min-width:120px}.big{font-size:28px;font-weight:800;color:var(--gold)}
+input,select{width:100%;padding:12px;margin:6px 0 10px;border-radius:10px;border:1px solid #60482f;background:#1b1510;color:var(--text);font-size:16px}
+.bottle{padding:12px 0;border-bottom:1px solid #493723}.bottle:last-child{border:0}.muted{color:var(--muted);font-size:14px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#211810;border-top:1px solid #493723;display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+nav button{background:none;color:var(--muted);font-size:13px;padding:8px}.active{color:var(--gold)!important}
+section{display:none}section.activeSection{display:block}#photo{max-width:100%;border-radius:14px;margin-top:12px;display:none}
+</style>
+</head>
+<body>
+<header><h1>RJ’s Whiskey Den</h1><div class="sub">Your personal whiskey & spirits inventory</div></header>
+<main>
+<section id="home" class="activeSection">
+ <div class="row"><div class="card stat"><div class="muted">Bottles</div><div id="count" class="big">0</div></div><div class="card stat"><div class="muted">Open</div><div id="openCount" class="big">0</div></div></div>
+ <div class="card"><h2>Welcome to the Den</h2><p>Start by adding a bottle manually or taking a photo. Automatic AI bottle recognition will be connected in the next development stage.</p><button onclick="show('scan')">Scan Bottles</button></div>
+</section>
+<section id="inventory">
+ <div class="card"><h2>Inventory</h2><input id="search" placeholder="Search bottles…" oninput="render()"><div id="list"></div></div>
+</section>
+<section id="scan">
+ <div class="card"><h2>Scan Bottles</h2><p class="muted">Take a photo or choose one from your library.</p>
+ <label class="btn">Take / Choose Photo<input id="camera" type="file" accept="image/*" capture="environment" style="display:none"></label>
+ <img id="photo"><p class="muted">For this first version, enter the bottle details below after taking the photo.</p></div>
+ <div class="card"><h2>Add Bottle</h2>
+ <input id="brand" placeholder="Brand / expression">
+ <input id="type" placeholder="Type (Bourbon, Rye, Scotch…)">
+ <input id="proof" placeholder="Proof">
+ <input id="size" placeholder="Bottle size (e.g. 750 mL)" value="750 mL">
+ <input id="remaining" type="number" min="0" max="100" placeholder="% remaining">
+ <button onclick="addBottle()">Add to My Den</button></div>
+</section>
+</main>
+<nav><button id="n-home" class="active" onclick="show('home')">My Den</button><button id="n-inventory" onclick="show('inventory')">Inventory</button><button id="n-scan" onclick="show('scan')">Scan</button></nav>
+<script>
+let bottles=JSON.parse(localStorage.getItem('rjBottles')||'[]');
+function save(){localStorage.setItem('rjBottles',JSON.stringify(bottles));render()}
+function show(id){document.querySelectorAll('section').forEach(x=>x.classList.remove('activeSection'));document.getElementById(id).classList.add('activeSection');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));document.getElementById('n-'+id)?.classList.add('active');render()}
+function addBottle(){let b={brand:brand.value.trim(),type:type.value.trim(),proof:proof.value.trim(),size:size.value.trim(),remaining:remaining.value};if(!b.brand){alert('Please enter the bottle name.');return} bottles.unshift(b);save();brand.value=type.value=proof.value=remaining.value='';show('inventory')}
+function render(){count.textContent=bottles.length;openCount.textContent=bottles.filter(b=>Number(b.remaining)<100).length;let q=(search?.value||'').toLowerCase();let x=bottles.filter(b=>(b.brand+' '+b.type).toLowerCase().includes(q));list.innerHTML=x.length?x.map((b,i)=>`<div class="bottle"><strong>${b.brand}</strong><div class="muted">${b.type||'Spirit'} • ${b.proof?b.proof+' proof • ':''}${b.size||''} • ${b.remaining||'?'}% remaining</div></div>`).join(''):'<p class="muted">No bottles yet.</p>'}
+camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(f);photo.style.display='block'}}
+render();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+</script>
+</body></html>

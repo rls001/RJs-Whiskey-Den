@@ -1,0 +1,9 @@
+{
+  "name": "RJ\u2019s Whiskey Den",
+  "short_name": "Whiskey Den",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#17120d",
+  "theme_color": "#17120d",
+  "description": "Personal whiskey and spirits inventory"
+}
