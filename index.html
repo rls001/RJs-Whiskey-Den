@@ -93,7 +93,8 @@ camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(
   alert('Scanner error: '+data.error);
 }else if(data.bottles && data.bottles.length){
   if(data.bottles.length===1){
-    const b=data.bottles[0];
+    window.lastScannedBottles=data.bottles;
+   const b=data.bottles[0];
     brand.value=[b.brand,b.expression].filter(Boolean).join(' — ');
     type.value=b.spiritType||'';
     proof.value=b.proof||'';
