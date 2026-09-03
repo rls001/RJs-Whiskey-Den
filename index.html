@@ -89,7 +89,7 @@ camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(
       });
       const data=await response.json();
       console.log('AI bottle result:',data);
-      alert(data.error ? 'Scanner error: '+data.error : 'Bottle photo analyzed successfully!');
+      alert(data.error ? 'Scanner error: '+data.error : JSON.stringify(data, null, 2));
     }catch(err){
       console.error(err);
       alert('Could not connect to the bottle scanner.');
