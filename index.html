@@ -92,13 +92,20 @@ camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(
       if(data.error){
   alert('Scanner error: '+data.error);
 }else if(data.bottles && data.bottles.length){
-  const b=data.bottles[0];
-  brand.value=[b.brand,b.expression].filter(Boolean).join(' — ');
-  type.value=b.spiritType||'';
-  proof.value=b.proof||'';
-  size.value=b.bottleSizeML||750;
-  remaining.value=b.remainingPercent??100;
-  alert('Bottle identified! Review the information below, then tap Add to My Den.');
+  if(data.bottles.length===1){
+    const b=data.bottles[0];
+    brand.value=[b.brand,b.expression].filter(Boolean).join(' — ');
+    type.value=b.spiritType||'';
+    proof.value=b.proof||'';
+    size.value=b.bottleSizeML||750;
+    remaining.value=b.remainingPercent??100;
+    alert('Bottle identified! Review the information below, then tap Add to My Den.');
+  }else{
+    const names=data.bottles.map((b,i)=>
+      (i+1)+'. '+[b.brand,b.expression].filter(Boolean).join(' — ')
+    ).join('\n');
+    alert(data.bottles.length+' bottles identified:\n\n'+names);
+  }
 }else{
   alert('No bottle could be identified.');
 }
