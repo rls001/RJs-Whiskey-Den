@@ -102,7 +102,8 @@ camera.onchange=e=>{let f=e.target.files[0];if(f){photo.src=URL.createObjectURL(
     remaining.value=b.remainingPercent??100;
     alert('Bottle identified! Review the information below, then tap Add to My Den.');
   }else{
-    const names=data.bottles.map((b,i)=>
+    window.lastScannedBottles=data.bottles;
+   const names=data.bottles.map((b,i)=>
       (i+1)+'. '+[b.brand,b.expression].filter(Boolean).join(' — ')
     ).join('\n');
     alert(data.bottles.length+' bottles identified:\n\n'+names);
