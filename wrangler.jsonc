@@ -1,0 +1,5 @@
+{
+  "name": "rjs-whiskey-den-ai",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-03"
+}
